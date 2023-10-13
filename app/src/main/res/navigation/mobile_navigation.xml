@@ -7,19 +7,34 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.instagirlsorgainzer.ui.home.HomeFragment"
+        android:name="com.friendsorgainzer.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_details"
+            app:destination="@id/navigation_details" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.instagirlsorgainzer.ui.dashboard.DashboardFragment"
+        android:name="com.friendsorgainzer.ui.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.instagirlsorgainzer.ui.notifications.NotificationsFragment"
+        android:name="com.friendsorgainzer.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/navigation_details"
+        android:name="com.friendsorgainzer.ui.details.DetailsFragment"
+        android:label="Details"
+        tools:layout="@layout/fragment_details">
+        <argument
+            android:name="girlId"
+            app:argType="integer" />
+    </fragment>
+
 </navigation>

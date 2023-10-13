@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_insert_default"
+        android:title="Insert Default Girls" />
+    <item
+        android:id="@+id/action_add"
+        android:title="Add Girl" />
+    <item
+        android:id="@+id/action_clear_recycler"
+        android:title="Clear Recycler" />
+    <item
+        android:id="@+id/action_clear_room"
+        android:title="Clear Room" />
+</menu>
