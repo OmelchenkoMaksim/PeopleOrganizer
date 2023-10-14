@@ -40,7 +40,7 @@ class DetailsFragment : Fragment() {
         activityResult = getActivityResult()
     }
 
-    private var girlId: Int = 0
+    private var personId: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,12 +50,12 @@ class DetailsFragment : Fragment() {
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
         val args: DetailsFragmentArgs by navArgs()
 
-        girlId = args.girlId
+        personId = args.personId
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getGirlDetails(girlId).collect { girl ->
-                binding.nameDetails.text = girl?.name
-                girl?.photoLocalUri?.let {
+            viewModel.getPersonDetails(personId).collect { personEntity ->
+                binding.nameDetails.text = personEntity?.name
+                personEntity?.photoLocalUri?.let {
                     binding.imageDetails.setImageURI(Uri.parse(it))
                 }
             }
@@ -74,15 +74,15 @@ class DetailsFragment : Fragment() {
     private fun getActivityResult() =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
-                val targetFile = File(requireContext().filesDir, "super_person_$girlId.jpg")
+                val targetFile = File(requireContext().filesDir, "super_person_$personId.jpg")
                 copyImageToInternalStorage(uri, targetFile)
 
                 binding.imageDetails.setImageURI(Uri.fromFile(targetFile))
 
                 val args: DetailsFragmentArgs by navArgs()
-                val girlId = args.girlId
+                val personId = args.personId
                 viewLifecycleOwner.lifecycleScope.launch {
-                    viewModel.updateGirlPhotoLocalUri(girlId, targetFile.absolutePath)
+                    viewModel.updatePersonPhotoLocalUri(personId, targetFile.absolutePath)
                 }
             }
         }
@@ -112,11 +112,11 @@ class DetailsFragment : Fragment() {
 
 class DetailsViewModel(private val repository: MainRepository) : ViewModel() {
 
-    fun getGirlDetails(id: Int): Flow<PersonEntity?> {
+    fun getPersonDetails(id: Int): Flow<PersonEntity?> {
         return repository.getPersonById(id)
     }
 
-    fun updateGirlPhotoLocalUri(id: Int, photoLocalUri: String) {
+    fun updatePersonPhotoLocalUri(id: Int, photoLocalUri: String) {
         viewModelScope.launch {
             repository.updatePersonPhotoLocalUri(id, photoLocalUri)
         }

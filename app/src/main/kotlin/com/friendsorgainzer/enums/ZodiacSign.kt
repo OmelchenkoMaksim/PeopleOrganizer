@@ -13,6 +13,6 @@ enum class ZodiacSign(val sign: String) {
     CAPRICORN("Capricorn / Козерог"),
     AQUARIUS("Aquarius / Водолей"),
     PISCES("Pisces / Рыбы"),
-    SNAKECHARMER("Snakecharmer / Змеелов")  // Заглушка
+    SNAKECHARMER("Ophiuchus / Змеелов")  // Заглушка
 }
 

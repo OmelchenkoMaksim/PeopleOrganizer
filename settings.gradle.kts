@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Insta Girls Orgainzer"
+rootProject.name = "Insta Person Orgainzer"
 include(":app")
  

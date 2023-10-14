@@ -1,6 +1,6 @@
 package com.friendsorgainzer.enums
 
-enum class CrashLevel(val level: String) {
+enum class CrushLevel(val level: String) {
     SUPER_TOP("9 - Почти Богиня / Super TOP"),
     TOP("8 - Топовая / TOP"),
     PERFECT("7 - Годная / REALLY GOOD"),

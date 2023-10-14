@@ -5,7 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.friendsorgainzer.enums.CrashLevel
+import com.friendsorgainzer.enums.CrushLevel
 import com.friendsorgainzer.enums.InteractionLevel
 import com.friendsorgainzer.enums.ZodiacSign
 import kotlinx.coroutines.flow.Flow
@@ -26,7 +26,7 @@ interface MainDao {
     suspend fun insertPerson(person: PersonEntity)
 
     /**
-     * Добавляет список девушек в таблицу.
+     * Добавляет список в таблицу.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(friends: List<PersonEntity>)
@@ -34,7 +34,7 @@ interface MainDao {
     // --- CRUD Operations: Read ---
 
     /**
-     * Получает все записи девушек из таблицы.
+     * Получает все записи из таблицы.
      */
     @Query("SELECT * FROM persons")
     fun getAllFriends(): Flow<List<PersonEntity>>
@@ -47,11 +47,11 @@ interface MainDao {
 
     // --- CRUD Operations: Update ---
 
-    /**
-     * Обновляет статус наличия парня у человека.
-     */
-    @Query("UPDATE persons SET inRelations = :hasBoyfriend WHERE id = :personId")
-    suspend fun updatePersonHasBoyfriend(personId: Int, hasBoyfriend: Boolean)
+    @Query("UPDATE persons SET inRelations = :checked WHERE id = :personId")
+    suspend fun updateInRelations(personId: Int, checked: Boolean)
+
+    @Query("UPDATE persons SET isFavorite = :checked WHERE id = :id")
+    suspend fun updateFavorite(id: Int, checked: Boolean)
 
     /**
      * Обновляет знак зодиака человека.
@@ -65,11 +65,20 @@ interface MainDao {
     @Query("UPDATE persons SET age = :newAge WHERE id = :personId")
     suspend fun updatePersonAge(personId: Int, newAge: Int)
 
-    @Query("UPDATE persons SET crashLevel = :level WHERE id = :personId")
-    suspend fun updateCrashLevel(personId: Int, level: CrashLevel)
+    @Query("UPDATE persons SET crushLevel = :level WHERE id = :personId")
+    suspend fun updateCrushLevel(personId: Int, level: CrushLevel)
 
     @Query("UPDATE persons SET interaction = :level WHERE id = :personId")
     suspend fun updateInteractionLevel(personId: Int, level: InteractionLevel)
+
+    @Query("UPDATE persons SET lastClicked = :lastClicked WHERE id = :id")
+    suspend fun updateLastClicked(id: Int, lastClicked: Long)
+
+    @Query("UPDATE persons SET name = :personName WHERE id = :id")
+    suspend fun updatePersonName(id: Int, personName: String)
+
+    @Query("UPDATE persons SET birthday = :date WHERE id = :id")
+    suspend fun updateBirthday(id: Int, date: String)
 
     /**
      * Обновляет комментарий к человеку.
@@ -100,7 +109,7 @@ interface MainDao {
     suspend fun deletePerson(personEntity: PersonEntity)
 
     /**
-     * Удаляет все записи девушек из таблицы.
+     * Удаляет все записи из таблицы.
      */
     @Query("DELETE FROM persons")
     suspend fun deleteAllPerson()

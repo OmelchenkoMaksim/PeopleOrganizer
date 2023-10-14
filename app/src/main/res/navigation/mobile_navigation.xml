@@ -33,7 +33,7 @@
         android:label="Details"
         tools:layout="@layout/fragment_details">
         <argument
-            android:name="girlId"
+            android:name="personId"
             app:argType="integer" />
     </fragment>
 

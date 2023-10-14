@@ -1,6 +1,6 @@
 package com.friendsorgainzer.room
 
-import com.friendsorgainzer.enums.CrashLevel
+import com.friendsorgainzer.enums.CrushLevel
 import com.friendsorgainzer.enums.InteractionLevel
 import com.friendsorgainzer.enums.ZodiacSign
 import kotlinx.coroutines.flow.Flow
@@ -28,8 +28,12 @@ class MainRepository(private val mainDao: MainDao) {
         mainDao.updatePersonPhotoUrl(id, url)
     }
 
-    suspend fun updateCrashSelected(id: Int, level: CrashLevel) {
-        mainDao.updateCrashLevel(id, level)
+    suspend fun updateLastClicked(id: Int, lastClicked: Long) {
+        mainDao.updateLastClicked(id, lastClicked)
+    }
+
+    suspend fun updateCrushSelected(id: Int, level: CrushLevel) {
+        mainDao.updateCrushLevel(id, level)
     }
 
     suspend fun updateInteractionLevel(id: Int, level: InteractionLevel) {
@@ -38,12 +42,11 @@ class MainRepository(private val mainDao: MainDao) {
 
 
     suspend fun updateInRelations(id: Int, inRelations: Boolean) {
-        mainDao.updatePersonHasBoyfriend(id, inRelations)
+        mainDao.updateInRelations(id, inRelations)
     }
 
-
-    suspend fun deleteAllPerson() {
-        mainDao.deleteAllPerson()
+    suspend fun updateFavorite(id: Int, checked: Boolean) {
+        mainDao.updateFavorite(id, checked)
     }
 
     suspend fun updatePersonZodiac(id: Int, zodiac: ZodiacSign) {
@@ -53,6 +56,14 @@ class MainRepository(private val mainDao: MainDao) {
 
     suspend fun updatePersonAge(id: Int, newAge: Int) {
         mainDao.updatePersonAge(id, newAge)
+    }
+
+    suspend fun updateBirthday(id: Int, date: String) {
+        mainDao.updateBirthday(id, date)
+    }
+
+    suspend fun updatePersonName(id: Int, personName: String) {
+        mainDao.updatePersonName(id, personName)
     }
 
     suspend fun updatePersonComment(id: Int, newComment: String) {
@@ -67,8 +78,8 @@ class MainRepository(private val mainDao: MainDao) {
         mainDao.resetAutoIncrement()
     }
 
-    suspend fun insertDefaultGirls() {
-        val defaultGirls = listOf(
+    suspend fun insertDefaultAccounts() {
+        val entities = listOf(
             PersonEntity(
                 name = "viski_gr2004",
                 url = "https://www.instagram.com/viski_gr2004/",
@@ -114,7 +125,7 @@ class MainRepository(private val mainDao: MainDao) {
                 url = "https://www.instagram.com/deanadeu/",
             )
         )
-        mainDao.insertAll(defaultGirls)
+        mainDao.insertAll(entities)
     }
 
 }

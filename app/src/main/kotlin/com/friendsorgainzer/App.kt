@@ -8,12 +8,12 @@ import com.friendsorgainzer.room.MainRepository
 class App : Application() {
 
     val repository: MainRepository
-        get() = ServiceLocator.provideGirlRepository(this)
+        get() = ServiceLocator.provideMainRepository(this)
 }
 
 object ServiceLocator {
 
-    fun provideGirlRepository(context: Context): MainRepository {
+    fun provideMainRepository(context: Context): MainRepository {
         val database = MainDatabase.getInstance(context)
         return MainRepository(database.mainDao())
     }

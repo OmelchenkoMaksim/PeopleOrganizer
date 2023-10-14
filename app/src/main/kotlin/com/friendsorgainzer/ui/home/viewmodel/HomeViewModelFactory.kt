@@ -1,4 +1,4 @@
-package com.friendsorgainzer.ui.home
+package com.friendsorgainzer.ui.home.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

@@ -3,4 +3,19 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+
+    <string-array name="sort_options">
+        <item>Nothing</item>
+        <item>ID</item>
+        <item>Name</item>
+        <item>Age</item>
+        <item>Birthday</item>
+        <item>Favorite</item>
+        <item>Last Connection</item>
+        <item>Crush</item>
+        <item>Interaction</item>
+        <item>Zodiac</item>
+    </string-array>
+
 </resources>

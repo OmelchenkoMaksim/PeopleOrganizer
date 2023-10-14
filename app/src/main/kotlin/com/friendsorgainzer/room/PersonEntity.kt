@@ -2,7 +2,7 @@ package com.friendsorgainzer.room
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.friendsorgainzer.enums.CrashLevel
+import com.friendsorgainzer.enums.CrushLevel
 import com.friendsorgainzer.enums.InteractionLevel
 import com.friendsorgainzer.enums.ZodiacSign
 
@@ -19,7 +19,8 @@ data class PersonEntity(
     val comments: String = "",
     val zodiac: ZodiacSign = ZodiacSign.SNAKECHARMER,
     val interaction: InteractionLevel = InteractionLevel.DEFAULT,
-    val crashLevel: CrashLevel = CrashLevel.DEFAULT,
-    val lastClicked: Long = 0,
-    val isFavorite: Boolean = false
+    val crushLevel: CrushLevel = CrushLevel.DEFAULT,
+    var lastClicked: Long = 0,
+    val isFavorite: Boolean = false,
+    val birthday: String = "Birthday (click to pick)"
 )
