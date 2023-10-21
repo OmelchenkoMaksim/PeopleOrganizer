@@ -3,6 +3,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="day_and_night_changer">day and night changer</string>
 
 
     <string-array name="sort_options">

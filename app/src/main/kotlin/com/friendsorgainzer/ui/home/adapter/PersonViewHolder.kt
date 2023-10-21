@@ -95,6 +95,7 @@ class PersonViewHolder(
 
     private fun fillFields(person: PersonEntity) {
         binding.apply {
+            idPresenter.text = person.id.toString()
             nameEditText.setText(person.name)
             birthdayEditText.setText(person.birthday)
             urlEditText.setText(person.url)

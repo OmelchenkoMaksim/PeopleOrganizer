@@ -1,7 +1,9 @@
 package com.friendsorgainzer
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -16,8 +18,18 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Загрузка темы из SharedPreferences
+        val isDarkMode = App.sharedPreferences.getBoolean("isDarkMode", false)
+        AppCompatDelegate.setDefaultNightMode(
+            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        )
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.dayNight.setOnClickListener {
+            changeTheme()
+        }
 
         val navView: BottomNavigationView = binding.navView
 
@@ -33,4 +45,20 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
+
+    private fun changeTheme() {
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        when (currentNightMode) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                App.sharedPreferences.edit().putBoolean("isDarkMode", false).apply()
+            }
+
+            Configuration.UI_MODE_NIGHT_NO -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                App.sharedPreferences.edit().putBoolean("isDarkMode", true).apply()
+            }
+        }
+    }
+
 }
