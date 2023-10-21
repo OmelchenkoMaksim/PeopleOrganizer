@@ -36,8 +36,8 @@ class HomeViewModel(private val repository: MainRepository) : ViewModel() {
     }
 
 
-    fun addPerson(name: String, zodiac: String = "", age: Int) {
-        val newPerson = PersonEntity(0, name, zodiac, age = age)
+    fun addPerson(name: String, url: String = "https://") {
+        val newPerson = PersonEntity(name = name, url = url)
         viewModelScope.launch {
             repository.insertPerson(newPerson)
         }

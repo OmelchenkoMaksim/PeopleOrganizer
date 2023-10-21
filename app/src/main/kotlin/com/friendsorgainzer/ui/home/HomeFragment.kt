@@ -109,26 +109,25 @@ class HomeFragment : Fragment(), HomeAdapterBridge {
 
     private fun navigateToAddPersonFragment() {
         val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Добавить карточку")
+        builder.setTitle("Добавить карточку | Add Card")
 
         val layout = LayoutInflater.from(requireContext()).inflate(R.layout.add_person_dialog, null)
         builder.setView(layout)
 
-        val nameEditText = layout.findViewById<EditText>(R.id.nameEditText)
-        val ageEditText = layout.findViewById<EditText>(R.id.ageEditText)
-        ageEditText.setText("0")
+        val nameEditText = layout.findViewById<EditText>(R.id.addNameEditText)
+        val urlEditText = layout.findViewById<EditText>(R.id.addUrlEditText)
 
-        builder.setPositiveButton("Добавить") { _, _ ->
+        builder.setPositiveButton("Add-Добавить") { _, _ ->
 
             val name = nameEditText.text.toString()
-            val age = ageEditText.text.toString()
+            val url = urlEditText.text.toString()
 
-            if (name.isNotEmpty() && age.isNotEmpty()) {
-                viewModel.addPerson(name, age = age.toInt())
+            if (name.isNotEmpty() && url.isNotEmpty()) {
+                viewModel.addPerson(name, url = url)
             }
         }
 
-        builder.setNegativeButton("Отмена", null)
+        builder.setNegativeButton("Cancel-Отмена", null)
         builder.show()
     }
 

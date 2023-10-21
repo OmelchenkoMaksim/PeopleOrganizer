@@ -5,20 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.navArgs
 import com.friendsorgainzer.App
 import com.friendsorgainzer.databinding.FragmentDetailsBinding
-import com.friendsorgainzer.room.MainRepository
-import com.friendsorgainzer.room.PersonEntity
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
@@ -66,8 +60,11 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.imageDetails.setOnClickListener {
-            Toast.makeText(binding.root.context, "Photo will update after RESTART!", Toast.LENGTH_LONG).show()
             activityResult.launch("image/*")
+        }
+
+        binding.buttonBack.setOnClickListener {
+            requireActivity().supportFragmentManager.popBackStack()
         }
     }
 
@@ -110,15 +107,3 @@ class DetailsFragment : Fragment() {
     }
 }
 
-class DetailsViewModel(private val repository: MainRepository) : ViewModel() {
-
-    fun getPersonDetails(id: Int): Flow<PersonEntity?> {
-        return repository.getPersonById(id)
-    }
-
-    fun updatePersonPhotoLocalUri(id: Int, photoLocalUri: String) {
-        viewModelScope.launch {
-            repository.updatePersonPhotoLocalUri(id, photoLocalUri)
-        }
-    }
-}

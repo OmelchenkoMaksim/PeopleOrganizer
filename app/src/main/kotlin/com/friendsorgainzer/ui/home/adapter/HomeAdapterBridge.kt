@@ -19,5 +19,4 @@ interface HomeAdapterBridge {
     fun onFavoriteToggled(id: Int, checked: Boolean)
     fun onNameEntered(id: Int, personName: String)
     fun onBirthdayEntered(id: Int, date: String)
-
 }
