@@ -1,5 +1,7 @@
 package com.friendsorgainzer.ui.home
 
+import android.content.Context
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuInflater
@@ -8,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
@@ -42,7 +45,11 @@ class HomeFragment : Fragment(), HomeAdapterBridge {
     }
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -67,28 +74,52 @@ class HomeFragment : Fragment(), HomeAdapterBridge {
     }
 
     private fun configureSort() {
-        // Настройка Spinner
-        val adapter = ArrayAdapter.createFromResource(
+        val titleForSort = "Sort by ..."
+        val sortOptions = arrayOf(titleForSort) + resources.getStringArray(R.array.sort_options)
+        val adapter = CustomSpinnerAdapterWithTitle(
             requireContext(),
-            R.array.sort_options, // опции сортировки в strings.xml
-            android.R.layout.simple_spinner_item
+            android.R.layout.simple_spinner_item,
+            sortOptions
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
         binding.sortSpinner.adapter = adapter
         binding.sortSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
-                val selected = SortBy.values()[pos]
-                viewModel.sortList(selected)
+                if (pos > 0) { // Пропустим заголовок
+                    val selected = SortBy.values()[pos - 1]  // -1, чтобы учесть заголовок
+                    viewModel.sortList(selected)
+                }
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
 
-    override fun onPhotoClick(id: Int) {
-        val action = HomeFragmentDirections.actionNavigationHomeToNavigationDetails(id)
-        findNavController().navigate(action)
+    class CustomSpinnerAdapterWithTitle(context: Context, resource: Int, objects: Array<String>) :
+        ArrayAdapter<String>(context, resource, objects) {
+
+        override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val view = super.getDropDownView(position, convertView, parent)
+
+            if (position == 0) {
+                // Сделать текст как заголовок
+                (view as TextView).apply {
+                    textSize = 20f
+                    setTypeface(typeface, Typeface.BOLD)
+                    setPadding(16, 16, 16, 16)
+                }
+            } else {
+                // Обычный текст
+                (view as TextView).apply {
+                    textSize = 16f
+                    setTypeface(typeface, Typeface.NORMAL)
+                    setPadding(16, 16, 16, 16)
+                }
+            }
+
+            return view
+        }
     }
 
     private fun showFabMenu(view: View) {
@@ -142,6 +173,11 @@ class HomeFragment : Fragment(), HomeAdapterBridge {
             .show()
     }
 
+    override fun onPhotoClick(id: Int) {
+        val action = HomeFragmentDirections.actionNavigationHomeToNavigationDetails(id)
+        findNavController().navigate(action)
+    }
+
     override fun onZodiacSelected(id: Int, selectedSign: ZodiacSign) {
         viewModel.updateZodiacSign(id, selectedSign)
     }
@@ -175,7 +211,7 @@ class HomeFragment : Fragment(), HomeAdapterBridge {
     }
 
     override fun onUrlEntered(id: Int, url: String) {
-        viewModel.updatePersonPhotoUrl(id, url)
+        viewModel.updatePersonLinkUrl(id, url)
     }
 
     override fun onHasPartnerToggled(id: Int, inRelations: Boolean) {

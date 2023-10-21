@@ -98,6 +98,9 @@ interface MainDao {
     @Query("UPDATE persons SET photoUrl = :photoUrl WHERE id = :personId")
     suspend fun updatePersonPhotoUrl(personId: Int, photoUrl: String)
 
+    @Query("UPDATE persons SET url = :linkUrl WHERE id = :personId")
+    suspend fun updatePersonLinkUrl(personId: Int, linkUrl: String)
+
     // ... другие методы для обновления данных
 
     // --- CRUD Operations: Delete ---
@@ -119,5 +122,6 @@ interface MainDao {
      */
     @Query("DELETE FROM sqlite_sequence WHERE name='persons'")
     suspend fun resetAutoIncrement()
+
 
 }

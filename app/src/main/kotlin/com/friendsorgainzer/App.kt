@@ -33,7 +33,8 @@ class App : Application() {
     private fun setupNetworkListener() {
         networkCallback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
-                Toast.makeText(this@App, "Internet connection established", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@App, "Internet connection established", Toast.LENGTH_SHORT)
+                    .show()
             }
 
             override fun onLost(network: Network) {
@@ -56,7 +57,8 @@ class App : Application() {
     companion object MainProvider {
         lateinit var sharedPreferences: SharedPreferences
         private fun initPrefs(context: Context) {
-            sharedPreferences = context.getSharedPreferences("person_app_prefs", Context.MODE_PRIVATE)
+            sharedPreferences =
+                context.getSharedPreferences("person_app_prefs", Context.MODE_PRIVATE)
         }
 
         private fun provideMainRepository(context: Context): MainRepository {

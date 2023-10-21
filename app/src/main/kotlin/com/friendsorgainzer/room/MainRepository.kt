@@ -4,9 +4,49 @@ import com.friendsorgainzer.enums.CrushLevel
 import com.friendsorgainzer.enums.InteractionLevel
 import com.friendsorgainzer.enums.ZodiacSign
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class MainRepository(private val mainDao: MainDao) {
-    val allPersons: Flow<List<PersonEntity>> = mainDao.getAllFriends()
+    val allPersons: Flow<List<PersonEntity>> = fillMainList()
+
+    /**
+     * Тут страховочная фильтрация,
+     * которая удаляет элементы у которых очень похож урл,
+     * она не обязательна, т.к. все работает корректно, но на всякий случай оставлю
+     */
+    private fun fillMainList() = mainDao.getAllFriends()
+        .map { list ->
+            val uniqueUrls = mutableMapOf<String, PersonEntity>()
+            val toDelete = mutableListOf<PersonEntity>()
+
+            list.forEach { person ->
+                val shortUrl = person.url.dropLast(2)
+                val existing = uniqueUrls[shortUrl]
+
+                if (existing == null || existing.url.length <= person.url.length) {
+                    uniqueUrls[shortUrl] = person
+
+                    // Если уже была другая версия, помечаем её на удаление
+                    if (existing != null) {
+                        toDelete.add(existing)
+                    }
+                } else {
+                    // Если текущая версия короче или равна, помечаем её на удаление
+                    toDelete.add(person)
+                }
+            }
+
+            // Здесь можно удалить дубликаты из БД
+            if (toDelete.isNotEmpty()) {
+                // вызов DAO метода для удаления
+                toDelete.forEach { personWithDuplicateUrl ->
+                    deletePerson(personWithDuplicateUrl)
+                }
+            }
+
+            // Возвращаем уникальные элементы
+            uniqueUrls.values.toList()
+        }
 
     suspend fun insertPerson(personEntity: PersonEntity) {
         mainDao.insertPerson(personEntity)
@@ -26,6 +66,10 @@ class MainRepository(private val mainDao: MainDao) {
 
     suspend fun updatePersonPhotoUrl(id: Int, url: String) {
         mainDao.updatePersonPhotoUrl(id, url)
+    }
+
+    suspend fun updatePersonLinkUrl(id: Int, url: String) {
+        mainDao.updatePersonLinkUrl(id, url)
     }
 
     suspend fun updateLastClicked(id: Int, lastClicked: Long) {
@@ -79,51 +123,8 @@ class MainRepository(private val mainDao: MainDao) {
     }
 
     suspend fun insertDefaultAccounts() {
-        val entities = listOf(
-            PersonEntity(
-                name = "viski_gr2004",
-                url = "https://www.instagram.com/viski_gr2004/",
-            ),
-            PersonEntity(
-                name = "rozmarindas",
-                url = "https://www.instagram.com/rozmarindas/",
-            ),
-            PersonEntity(
-                name = "dashaafan",
-                url = "https://www.instagram.com/dashaafan/",
-            ),
-            PersonEntity(
-                name = "anna_rblk",
-                url = "https://www.instagram.com/anna_rblk",
-            ),
-            PersonEntity(
-                name = "aanniee.st",
-                url = "https://www.instagram.com/aanniee.st/",
-            ),
-            PersonEntity(
-                name = "aloyyya_",
-                url = "https://www.instagram.com/aloyyya_/",
-            ),
-            PersonEntity(
-                name = "zhanna_sheina",
-                url = "https://www.instagram.com/zhanna_sheina/",
-            ),
-            PersonEntity(
-                name = "la.kud",
-                url = "https://www.instagram.com/la.kud/",
-            ),
-            PersonEntity(
-                name = "_kozzzya_",
-                url = "https://www.instagram.com/_kozzzya_/",
-            ),
-            PersonEntity(
-                name = "is.plysha",
-                url = "https://www.instagram.com/is.plysha/",
-            ),
-            PersonEntity(
-                name = "deanadeu",
-                url = "https://www.instagram.com/deanadeu/",
-            )
+        val entities = listOf<PersonEntity>(
+
         )
         mainDao.insertAll(entities)
     }

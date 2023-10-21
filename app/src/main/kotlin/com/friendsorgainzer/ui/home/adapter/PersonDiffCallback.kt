@@ -10,10 +10,7 @@ class PersonDiffCallback : DiffUtil.ItemCallback<PersonEntity>() {
     }
 
     override fun areContentsTheSame(oldItem: PersonEntity, newItem: PersonEntity): Boolean {
-        return oldItem.photoLocalUri == newItem.photoLocalUri &&
-                oldItem.name == newItem.name &&
-                oldItem.url == newItem.url &&
-                oldItem.age == newItem.age
+        return oldItem.photoLocalUri == newItem.photoLocalUri
     }
 
     override fun getChangePayload(oldItem: PersonEntity, newItem: PersonEntity): Any? {

@@ -97,9 +97,9 @@ class HomeViewModel(private val repository: MainRepository) : ViewModel() {
         }
     }
 
-    fun updatePersonPhotoUrl(id: Int, url: String) {
+    fun updatePersonLinkUrl(id: Int, url: String) {
         viewModelScope.launch {
-            repository.updatePersonPhotoUrl(id, url)
+            repository.updatePersonLinkUrl(id, url)
         }
     }
 

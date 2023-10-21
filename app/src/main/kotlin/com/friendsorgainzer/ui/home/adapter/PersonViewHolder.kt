@@ -108,10 +108,12 @@ class PersonViewHolder(
             openInfoButton.setOnClickListener {
                 if (detailsContainer.visibility == View.GONE) {
                     detailsContainer.visibility = View.VISIBLE
-                    openInfoButton.text = "Hide Info" // Можно изменить текст кнопки на "Hide Info" при раскрытии
+                    openInfoButton.text =
+                        "Hide Info" // Можно изменить текст кнопки на "Hide Info" при раскрытии
                 } else {
                     detailsContainer.visibility = View.GONE
-                    openInfoButton.text = "Info" // Меняем текст обратно на "Info", когда информация скрыта
+                    openInfoButton.text =
+                        "Info" // Меняем текст обратно на "Info", когда информация скрыта
                 }
             }
         }
@@ -189,7 +191,11 @@ class PersonViewHolder(
                         person.lastClicked = currentTime
                         fragmentBridge.onLastClickedUpdated(person.id, currentTime)
                     } else {
-                        Toast.makeText(binding.root.context, "URL не действителен!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            binding.root.context,
+                            "URL не действителен!",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
                 .setNegativeButton("Отмена", null)
@@ -301,7 +307,12 @@ class PersonViewHolder(
      */
     private fun getSimpleItemSelectedListener(onItemSelected: (Int) -> Unit) =
         object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 onItemSelected(position)
             }
 
