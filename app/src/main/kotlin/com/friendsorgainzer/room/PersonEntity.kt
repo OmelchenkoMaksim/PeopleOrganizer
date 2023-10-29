@@ -22,5 +22,7 @@ data class PersonEntity(
     val crushLevel: CrushLevel = CrushLevel.DEFAULT,
     var lastClicked: Long = 0,
     val isFavorite: Boolean = false,
-    val birthday: String = "Birthday (click to pick)"
+    val birthday: String = "Birthday (click to pick)",
+    val hasWrittenTo: Boolean = false,
+    val hasReceivedReply: Boolean = false
 )

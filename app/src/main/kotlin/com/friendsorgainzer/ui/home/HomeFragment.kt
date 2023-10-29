@@ -182,6 +182,14 @@ class HomeFragment : Fragment(), HomeAdapterBridge {
         viewModel.updateInRelations(id, inRelations)
     }
 
+    override fun updateWrittenTo(id: Int, writtenTo: Boolean) {
+        viewModel.updateWrittenTo(id, writtenTo)
+    }
+
+    override fun updateReceivedReply(id: Int, receivedReply: Boolean) {
+        viewModel.updateReceivedReply(id, receivedReply)
+    }
+
     override fun onFavoriteToggled(id: Int, checked: Boolean) {
         viewModel.updateFavorite(id, checked)
     }

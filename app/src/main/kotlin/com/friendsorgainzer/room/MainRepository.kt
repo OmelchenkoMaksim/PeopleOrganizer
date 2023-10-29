@@ -45,6 +45,14 @@ class MainRepository(private val mainDao: MainDao) {
         mainDao.updateInRelations(id, inRelations)
     }
 
+    suspend fun updateWrittenTo(id: Int, writtenTo: Boolean) {
+        mainDao.updateWrittenTo(id, writtenTo)
+    }
+
+    suspend fun updateReceivedReply(id: Int, receivedReply: Boolean) {
+        mainDao.updateReceivedReply(id, receivedReply)
+    }
+
     suspend fun updateFavorite(id: Int, checked: Boolean) {
         mainDao.updateFavorite(id, checked)
     }

@@ -50,6 +50,12 @@ interface MainDao {
     @Query("UPDATE persons SET inRelations = :checked WHERE id = :personId")
     suspend fun updateInRelations(personId: Int, checked: Boolean)
 
+    @Query("UPDATE persons SET hasWrittenTo = :checked WHERE id = :personId")
+    suspend fun updateWrittenTo(personId: Int, checked: Boolean)
+
+    @Query("UPDATE persons SET hasReceivedReply = :checked WHERE id = :personId")
+    suspend fun updateReceivedReply(personId: Int, checked: Boolean)
+
     @Query("UPDATE persons SET isFavorite = :checked WHERE id = :id")
     suspend fun updateFavorite(id: Int, checked: Boolean)
 

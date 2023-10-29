@@ -19,4 +19,6 @@ interface HomeAdapterBridge {
     fun onFavoriteToggled(id: Int, checked: Boolean)
     fun onNameEntered(id: Int, personName: String)
     fun onBirthdayEntered(id: Int, date: String)
+    fun updateReceivedReply(id: Int, receivedReply: Boolean)
+    fun updateWrittenTo(id: Int, writtenTo: Boolean)
 }

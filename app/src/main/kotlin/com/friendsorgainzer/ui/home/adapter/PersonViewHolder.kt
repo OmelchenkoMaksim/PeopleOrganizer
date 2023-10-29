@@ -58,6 +58,8 @@ class PersonViewHolder(
         }
     }
 
+    private val NOT_VISITED_TIME = 300000L * 60 * 60 * 1000  // 300000 часов в миллисекундах
+
     fun bind(personEntity: PersonEntity) {
         currentPerson = personEntity
 
@@ -77,6 +79,8 @@ class PersonViewHolder(
 
         setupOpenUrlButton(personEntity)
         setupHasPartnerCheckBox(personEntity)
+        setupUpdateWrittenTo(personEntity)
+        setupUpdateReceivedReply(personEntity)
         setupFavoriteCheckBox(personEntity)
         setupPhotosClick(personEntity)
         setupDeleteButton(personEntity)
@@ -85,7 +89,7 @@ class PersonViewHolder(
         setupZodiacSpinner(personEntity)
         setupInteractionSpinner(personEntity)
         setupBirthdayEditTextWithPicker(personEntity)
-//          for last connection timer
+//      for last connection timer
         updateLastConnectionTime(personEntity)
     }
 
@@ -104,6 +108,9 @@ class PersonViewHolder(
             ageEditText.setText(person.age.toString())
             hasRelationsCheckBox.isChecked = person.inRelations == true
             favoriteCheckBox.isChecked = person.isFavorite == true
+
+            val isProfileVisited = System.currentTimeMillis() - person.lastClicked < NOT_VISITED_TIME
+            binding.checkedProfile.isChecked = isProfileVisited
 
             openInfoButton.setOnClickListener {
                 if (detailsContainer.visibility == View.GONE) {
@@ -163,6 +170,18 @@ class PersonViewHolder(
     private fun setupHasPartnerCheckBox(person: PersonEntity) {
         binding.hasRelationsCheckBox.setOnCheckedChangeListener { _, isChecked ->
             fragmentBridge.onHasPartnerToggled(person.id, isChecked)
+        }
+    }
+
+    private fun setupUpdateWrittenTo(person: PersonEntity) {
+        binding.wroteCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            fragmentBridge.updateWrittenTo(person.id, isChecked)
+        }
+    }
+
+    private fun setupUpdateReceivedReply(person: PersonEntity) {
+        binding.gotReplyCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            fragmentBridge.updateReceivedReply(person.id, isChecked)
         }
     }
 

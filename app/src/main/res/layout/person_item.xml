@@ -15,6 +15,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <CheckBox
+        android:id="@+id/checkedProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="visited"
+        app:layout_constraintBottom_toTopOf="@id/wroteCheckBox"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/wroteCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="wroteTo"
+        app:layout_constraintBottom_toTopOf="@id/gotReplyCheckBox"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/gotReplyCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="gotReply"
+        app:layout_constraintBottom_toBottomOf="@id/picture"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <TextView
         android:id="@+id/position"
         android:layout_width="wrap_content"

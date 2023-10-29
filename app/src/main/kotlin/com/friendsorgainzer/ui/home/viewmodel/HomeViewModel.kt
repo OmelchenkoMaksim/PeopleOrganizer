@@ -14,9 +14,13 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(private val repository: MainRepository) : ViewModel() {
     private val currentSortOrder = MutableStateFlow(SortBy.NOTHING)
+    private val shouldResort = MutableStateFlow(true)
 
     val allFriends: Flow<List<PersonEntity>> = repository.allPersons
         .combine(currentSortOrder) { friends, sortOrder ->
+            if (!shouldResort.value) {
+                return@combine friends // если не нужно пересортировывать, возвращаем список как есть
+            }
             when (sortOrder) {
                 SortBy.NOTHING -> friends
                 SortBy.NAME -> friends.sortedBy { it.name }
@@ -33,8 +37,14 @@ class HomeViewModel(private val repository: MainRepository) : ViewModel() {
 
     fun sortList(sortBy: SortBy) {
         currentSortOrder.value = sortBy
+        shouldResort.value = true
     }
 
+    private suspend fun <T> withDatabaseUpdate(block: suspend () -> T): T {
+        val result = block()
+        shouldResort.value = false
+        return result
+    }
 
     fun addPerson(name: String, url: String = "https://") {
         val newPerson = PersonEntity(name = name, url = url)
@@ -57,67 +67,105 @@ class HomeViewModel(private val repository: MainRepository) : ViewModel() {
 
     fun updateZodiacSign(id: Int, zodiacSign: ZodiacSign) {
         viewModelScope.launch {
-            repository.updatePersonZodiac(id, zodiacSign)
+            withDatabaseUpdate {
+                repository.updatePersonZodiac(id, zodiacSign)
+            }
         }
     }
 
     fun updateAge(id: Int, age: Int) {
         viewModelScope.launch {
-            repository.updatePersonAge(id, age)
+            withDatabaseUpdate {
+                repository.updatePersonAge(id, age)
+            }
         }
     }
 
     fun updateCrushSelected(id: Int, selectedLevel: CrushLevel) {
         viewModelScope.launch {
-            repository.updateCrushSelected(id, selectedLevel)
+            withDatabaseUpdate {
+                repository.updateCrushSelected(id, selectedLevel)
+            }
         }
     }
 
     fun updateInteractionSelected(id: Int, selectedLevel: InteractionLevel) {
         viewModelScope.launch {
-            repository.updateInteractionLevel(id, selectedLevel)
+            withDatabaseUpdate {
+                repository.updateInteractionLevel(id, selectedLevel)
+            }
         }
     }
 
     fun updateLastClicked(id: Int, lastClicked: Long) {
         viewModelScope.launch {
-            repository.updateLastClicked(id, lastClicked)
+            withDatabaseUpdate {
+                repository.updateLastClicked(id, lastClicked)
+            }
         }
     }
 
     fun updateComment(id: Int, comment: String) {
         viewModelScope.launch {
-            repository.updatePersonComment(id, comment)
+            withDatabaseUpdate {
+                repository.updatePersonComment(id, comment)
+            }
         }
     }
 
     fun updateName(id: Int, personName: String) {
         viewModelScope.launch {
-            repository.updatePersonName(id, personName)
+            withDatabaseUpdate {
+                repository.updatePersonName(id, personName)
+            }
         }
     }
 
     fun updatePersonPhotoUrl(id: Int, url: String) {
         viewModelScope.launch {
-            repository.updatePersonPhotoUrl(id, url)
+            withDatabaseUpdate {
+                repository.updatePersonPhotoUrl(id, url)
+            }
         }
     }
 
     fun updateInRelations(id: Int, inRelations: Boolean) {
         viewModelScope.launch {
-            repository.updateInRelations(id, inRelations)
+            withDatabaseUpdate {
+                repository.updateInRelations(id, inRelations)
+            }
+        }
+    }
+
+    fun updateWrittenTo(id: Int, writtenTo: Boolean) {
+        viewModelScope.launch {
+            withDatabaseUpdate {
+                repository.updateWrittenTo(id, writtenTo)
+            }
+        }
+    }
+
+    fun updateReceivedReply(id: Int, receivedReply: Boolean) {
+        viewModelScope.launch {
+            withDatabaseUpdate {
+                repository.updateReceivedReply(id, receivedReply)
+            }
         }
     }
 
     fun updateBirthday(id: Int, date: String) {
         viewModelScope.launch {
-            repository.updateBirthday(id, date)
+            withDatabaseUpdate {
+                repository.updateBirthday(id, date)
+            }
         }
     }
 
     fun updateFavorite(id: Int, checked: Boolean) {
         viewModelScope.launch {
-            repository.updateFavorite(id, checked)
+            withDatabaseUpdate {
+                repository.updateFavorite(id, checked)
+            }
         }
     }
 

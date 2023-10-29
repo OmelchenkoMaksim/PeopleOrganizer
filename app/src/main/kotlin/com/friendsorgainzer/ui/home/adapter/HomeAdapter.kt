@@ -34,7 +34,8 @@ class HomeAdapter(
     override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {
         holder.unbind()  // Останавливаем предыдущий Handler, если есть
         holder.bind(getItem(position))
-        holder.binding.position.text = (position + 1).toString()
+        val myPosition = (position + 1).toString()
+        holder.binding.position.text = myPosition
     }
 
     override fun onBindViewHolder(holder: PersonViewHolder, position: Int, payloads: MutableList<Any>) {
