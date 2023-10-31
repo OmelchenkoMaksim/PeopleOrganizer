@@ -13,8 +13,11 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val repository: MainRepository) : ViewModel() {
+
     private val currentSortOrder = MutableStateFlow(SortBy.NOTHING)
     private val shouldResort = MutableStateFlow(true)
+    private var lastSortOrder: SortBy? = null
+
 
     val allFriends: Flow<List<PersonEntity>> = repository.allPersons
         .combine(currentSortOrder) { friends, sortOrder ->
@@ -23,22 +26,39 @@ class HomeViewModel(private val repository: MainRepository) : ViewModel() {
             }
             when (sortOrder) {
                 SortBy.NOTHING -> friends
-                SortBy.NAME -> friends.sortedBy { it.name }
-                SortBy.AGE -> friends.sortedBy { it.age }
-                SortBy.ID -> friends.sortedBy { it.id }
-                SortBy.BIRTHDAY -> friends.sortedBy { it.birthday }
-                SortBy.FAVORITE -> friends.sortedBy { it.isFavorite }
-                SortBy.LAST_CONNECTION -> friends.sortedBy { it.lastClicked }
-                SortBy.CRUSH -> friends.sortedBy { it.crushLevel }
-                SortBy.INTERACTION -> friends.sortedBy { it.interaction }
-                SortBy.ZODIAC -> friends.sortedBy { it.zodiac }
+                SortBy.NAME -> friends.sortedByOrder({ it.name }, sortOrder, lastSortOrder)
+                SortBy.AGE -> friends.sortedByOrder({ it.age }, sortOrder, lastSortOrder)
+                SortBy.ID -> friends.sortedByOrder({ it.id }, sortOrder, lastSortOrder)
+                SortBy.BIRTHDAY -> friends.sortedByOrder({ it.birthday }, sortOrder, lastSortOrder)
+                SortBy.FAVORITE -> friends.sortedByOrder({ it.isFavorite }, sortOrder, lastSortOrder)
+                SortBy.LAST_CONNECTION -> friends.sortedByOrder({ it.lastClicked }, sortOrder, lastSortOrder)
+                SortBy.CRUSH -> friends.sortedByOrder({ it.crushLevel }, sortOrder, lastSortOrder)
+                SortBy.INTERACTION -> friends.sortedByOrder({ it.interaction }, sortOrder, lastSortOrder)
+                SortBy.ZODIAC -> friends.sortedByOrder({ it.zodiac }, sortOrder, lastSortOrder)
+                SortBy.WRITTEN_TO -> friends.sortedByOrder({ it.hasWrittenTo }, sortOrder, lastSortOrder)
+                SortBy.RECEIVED_REPLY -> friends.sortedByOrder({ it.hasReceivedReply }, sortOrder, lastSortOrder)
             }
         }
 
+    private inline fun <T, R : Comparable<R>> List<T>.sortedByOrder(
+        crossinline selector: (T) -> R?,
+        order: SortBy,
+        lastOrder: SortBy?
+    ): List<T> {
+        return if (order == lastOrder) {
+            this.sortedByDescending(selector)
+        } else {
+            this.sortedBy(selector)
+        }
+    }
+
     fun sortList(sortBy: SortBy) {
-        currentSortOrder.value = sortBy
+        val isReversed = lastSortOrder == sortBy
+        currentSortOrder.value = if (isReversed) SortBy.NOTHING else sortBy
+        lastSortOrder = if (isReversed) null else sortBy
         shouldResort.value = true
     }
+
 
     private suspend fun <T> withDatabaseUpdate(block: suspend () -> T): T {
         val result = block()
@@ -177,6 +197,6 @@ class HomeViewModel(private val repository: MainRepository) : ViewModel() {
 
 
     enum class SortBy {
-        NOTHING, ID, NAME, AGE, BIRTHDAY, FAVORITE, LAST_CONNECTION, CRUSH, INTERACTION, ZODIAC
+        NOTHING, ID, NAME, AGE, BIRTHDAY, FAVORITE, LAST_CONNECTION, CRUSH, INTERACTION, ZODIAC, WRITTEN_TO, RECEIVED_REPLY
     }
 }
