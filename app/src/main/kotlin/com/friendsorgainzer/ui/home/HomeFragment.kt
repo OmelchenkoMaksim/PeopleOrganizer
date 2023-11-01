@@ -41,6 +41,8 @@ class HomeFragment : Fragment(), HomeAdapterBridge {
         HomeViewModelFactory((requireActivity().application as App).repository)
     }
 
+    private var isFirstLaunch = true // убирает ненужные срабатывания сортировки
+    private var isSpinnerInitialized = false // убирает ненужные срабатывания сортировки
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,14 +65,16 @@ class HomeFragment : Fragment(), HomeAdapterBridge {
 
         configureSort()
 
-        lifecycleScope.launch {
-            viewModel.allFriends.collect { friends ->
-                homeAdapter.submitList(friends)
+        if (isFirstLaunch) {
+            isFirstLaunch = false
+            lifecycleScope.launch {
+                viewModel.allFriends.collect { friends ->
+                    homeAdapter.submitList(friends)
+                }
             }
         }
     }
 
-    private var isSpinnerInitialized = false
     private fun configureSort() {
         // Настройка Spinner
         val adapter = ArrayAdapter.createFromResource(
@@ -96,6 +100,7 @@ class HomeFragment : Fragment(), HomeAdapterBridge {
     }
 
     override fun onPhotoClick(id: Int) {
+        isSpinnerInitialized = false
         val action = HomeFragmentDirections.actionNavigationHomeToNavigationDetails(id)
         findNavController().navigate(action)
     }
