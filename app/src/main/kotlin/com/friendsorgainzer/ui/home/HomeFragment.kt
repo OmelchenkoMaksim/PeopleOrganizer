@@ -42,7 +42,11 @@ class HomeFragment : Fragment(), HomeAdapterBridge {
     }
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -66,19 +70,24 @@ class HomeFragment : Fragment(), HomeAdapterBridge {
         }
     }
 
+    private var isSpinnerInitialized = false
     private fun configureSort() {
         // Настройка Spinner
         val adapter = ArrayAdapter.createFromResource(
             requireContext(),
-            R.array.sort_options, // опции сортировки в strings.xml
+            R.array.sort_options,
             android.R.layout.simple_spinner_item
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.sortSpinner.adapter = adapter
         binding.sortSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
-                val selected = SortBy.values()[pos]
-                viewModel.sortList(selected)
+                if (isSpinnerInitialized) {
+                    val selected = SortBy.values()[pos]
+                    viewModel.sortList(selected)
+                } else {
+                    isSpinnerInitialized = true
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {

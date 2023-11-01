@@ -17,6 +17,9 @@
         <item>Crush</item>
         <item>Interaction</item>
         <item>Zodiac</item>
+        <item>Written To</item>
+        <item>Received Reply</item>
+        <item>Reverse</item>
     </string-array>
 
 </resources>

@@ -17,45 +17,65 @@ class HomeViewModel(private val repository: MainRepository) : ViewModel() {
     private val currentSortOrder = MutableStateFlow(SortBy.NOTHING)
     private val shouldResort = MutableStateFlow(true)
     private var lastSortOrder: SortBy? = null
-
+    private var isReversed = false
 
     val allFriends: Flow<List<PersonEntity>> = repository.allPersons
         .combine(currentSortOrder) { friends, sortOrder ->
             if (!shouldResort.value) {
-                return@combine friends // если не нужно пересортировывать, возвращаем список как есть
+                return@combine friends
             }
-            when (sortOrder) {
-                SortBy.NOTHING -> friends
-                SortBy.NAME -> friends.sortedByOrder({ it.name }, sortOrder, lastSortOrder)
-                SortBy.AGE -> friends.sortedByOrder({ it.age }, sortOrder, lastSortOrder)
-                SortBy.ID -> friends.sortedByOrder({ it.id }, sortOrder, lastSortOrder)
-                SortBy.BIRTHDAY -> friends.sortedByOrder({ it.birthday }, sortOrder, lastSortOrder)
-                SortBy.FAVORITE -> friends.sortedByOrder({ it.isFavorite }, sortOrder, lastSortOrder)
-                SortBy.LAST_CONNECTION -> friends.sortedByOrder({ it.lastClicked }, sortOrder, lastSortOrder)
-                SortBy.CRUSH -> friends.sortedByOrder({ it.crushLevel }, sortOrder, lastSortOrder)
-                SortBy.INTERACTION -> friends.sortedByOrder({ it.interaction }, sortOrder, lastSortOrder)
-                SortBy.ZODIAC -> friends.sortedByOrder({ it.zodiac }, sortOrder, lastSortOrder)
-                SortBy.WRITTEN_TO -> friends.sortedByOrder({ it.hasWrittenTo }, sortOrder, lastSortOrder)
-                SortBy.RECEIVED_REPLY -> friends.sortedByOrder({ it.hasReceivedReply }, sortOrder, lastSortOrder)
+            sortFriendsByCriteria(friends, sortOrder)
+        }
+
+    private fun sortFriendsByCriteria(
+        friends: List<PersonEntity>,
+        sortOrder: SortBy?
+    ): List<PersonEntity> =
+        when (sortOrder) {
+            SortBy.NOTHING -> friends
+            SortBy.NAME -> friends.sortedByOrder { it.name }
+            SortBy.AGE -> friends.sortedByOrder { it.age }
+            SortBy.ID -> friends.sortedByOrder { it.id }
+            SortBy.BIRTHDAY -> friends.sortedByOrder { it.birthday }
+            SortBy.FAVORITE -> friends.sortedByOrder { it.isFavorite }
+            SortBy.LAST_CONNECTION -> friends.sortedByOrder { it.lastClicked }
+            SortBy.CRUSH -> friends.sortedByOrder { it.crushLevel }
+            SortBy.INTERACTION -> friends.sortedByOrder { it.interaction }
+            SortBy.ZODIAC -> friends.sortedByOrder { it.zodiac }
+            SortBy.WRITTEN_TO -> friends.sortedByOrder { it.hasWrittenTo }
+            SortBy.RECEIVED_REPLY -> friends.sortedByOrder { it.hasReceivedReply }
+            else -> {
+                if (sortOrder == SortBy.REVERSE && lastSortOrder == SortBy.REVERSE) friends
+                else if (sortOrder == SortBy.REVERSE) sortFriendsByCriteria(friends, lastSortOrder)
+                else friends
             }
         }
+
 
     private inline fun <T, R : Comparable<R>> List<T>.sortedByOrder(
-        crossinline selector: (T) -> R?,
-        order: SortBy,
-        lastOrder: SortBy?
-    ): List<T> {
-        return if (order == lastOrder) {
+        crossinline selector: (T) -> R?
+    ): List<T> =
+        if (isReversed)
             this.sortedByDescending(selector)
-        } else {
-            this.sortedBy(selector)
-        }
-    }
+        else this.sortedBy(selector)
 
     fun sortList(sortBy: SortBy) {
-        val isReversed = lastSortOrder == sortBy
-        currentSortOrder.value = if (isReversed) SortBy.NOTHING else sortBy
-        lastSortOrder = if (isReversed) null else sortBy
+        when (sortBy) {
+            SortBy.REVERSE -> {
+                lastSortOrder?.let {
+                    isReversed = !isReversed
+                    currentSortOrder.value = sortBy
+                }
+            }
+
+            else -> {
+                val isSameSort = lastSortOrder == sortBy
+                currentSortOrder.value = sortBy
+                isReversed = if (isSameSort) !isReversed else false
+
+                lastSortOrder = sortBy
+            }
+        }
         shouldResort.value = true
     }
 
@@ -197,6 +217,6 @@ class HomeViewModel(private val repository: MainRepository) : ViewModel() {
 
 
     enum class SortBy {
-        NOTHING, ID, NAME, AGE, BIRTHDAY, FAVORITE, LAST_CONNECTION, CRUSH, INTERACTION, ZODIAC, WRITTEN_TO, RECEIVED_REPLY
+        NOTHING, ID, NAME, AGE, BIRTHDAY, FAVORITE, LAST_CONNECTION, CRUSH, INTERACTION, ZODIAC, WRITTEN_TO, RECEIVED_REPLY, REVERSE
     }
 }
